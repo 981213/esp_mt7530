@@ -19,6 +19,7 @@
 #define MT7530_SYSC_CHIP_RESET 0x3
 
 #define MT7530_SYS_INT_STS 0x700c
+#define MT7530_SYS_IDENT 0x7ffc
 
 /* OpenWrt swconfig struct */
 

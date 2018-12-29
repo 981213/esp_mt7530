@@ -120,6 +120,12 @@ static void mt7530_link_polling(void *pvParameters)
 
 void mt7530_init(void)
 {
+	u32 reg;
+	reg = mt7530_r32(MT7530_SYS_IDENT);
+	if(reg>>16!=0x7530){
+		ESP_LOGE("mt7530", "unknown chip.");
+		return;
+	}
 	mt7530_chip_reset();
 	mt7530_vlan_load();
 	mt7530_vlan_apply();
