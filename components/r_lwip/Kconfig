@@ -91,6 +91,11 @@ config LWIP_APP_HTTP
     bool "Enable LWIP HTTP"
     default n
 
+config LWIP_HTTP_CUSTOM_FILES
+    bool "Use custom files for httpd"
+    depends on LWIP_APP_HTTP
+    default n
+
 config LWIP_APP_HTTP_CGI
     bool "Enable LWIP HTTP CGI Support"
     default n
