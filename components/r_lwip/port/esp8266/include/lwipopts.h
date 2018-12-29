@@ -58,17 +58,7 @@
 #define ESP_LWIP_IPV6_MLD 0
 #endif
 
-#ifdef CONFIG_ESP_UDP_SYNC_SEND
-#define ESP_UDP  1
-#endif
-
-#ifdef CONFIG_LWIP_SOCKET_MULTITHREAD
-#define SOCKETS_MT
-#endif
-
 //#define SOCKETS_TCP_TRACE
-
-#define TCP_HIGH_SPEED_RETRANSMISSION CONFIG_TCP_HIGH_SPEED_RETRANSMISSION
 
  /*
    ------------------------------------
@@ -949,6 +939,8 @@ size_t memp_malloc_get_size(size_t type);
  */
 #define TCP_CALCULATE_EFF_SEND_MSS      1
 
+/* reduce TCP_MSL to save memory during TCP TIME_WAIT */
+#define TCP_MSL				2000UL
 
 /**
  * TCP_SND_BUF: TCP sender buffer space (bytes).
