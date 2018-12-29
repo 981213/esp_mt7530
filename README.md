@@ -17,6 +17,17 @@ I'm using the master branch (currently v3.1) and you can find compiling guide th
 1. Set your MDIO/MDC GPIO in components/mdio_gpio/mdio_gpio.c and flash the binary into ESP8266 board.
 2. There is a simple serial console available on UART0. Currently you should set everything using that.
 
+## About httpd
+
+LwIP http stack is used and I wrote a spiffs wrapper for custom wwwroot.
+
+### Uploading your files to wwwroot
+
+1. Clone mkspiffs here: https://github.com/igrr/mkspiffs
+2. Build mkspiffs: make dist CPPFLAGS="-DSPIFFS_ALIGNED_OBJECT_INDEX_TABLES=1"
+3. Create your spiffs image: ./mkspiffs -c YOUR_WWW_ROOT -b 4096 -p 128 dest.img
+4. Flash it on your board: esptool.py write_flash 0x100000 dest.img
+
 ## License
 
 I took a lot of work from Linux kernel and OpenWrt so I guess at least the mdio and mt7530 module should be GPL.
