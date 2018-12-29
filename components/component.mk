@@ -1,1 +1,1 @@
-COMPONENT_SRCDIRS := r_lwip mdio_gpio mt7530
+COMPONENT_SRCDIRS := r_lwip mdio_gpio mt7530 lwhttpd
