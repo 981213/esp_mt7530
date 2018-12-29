@@ -58,6 +58,14 @@
 #define ESP_LWIP_IPV6_MLD 0
 #endif
 
+#ifdef CONFIG_LWIP_APP_HTTP_CGI
+#define LWIP_HTTPD_CGI 1
+#endif
+
+#ifdef CONFIG_LWIP_APP_HTTP_POST
+#define LWIP_HTTPD_SUPPORT_POST 1
+#endif
+
 //#define SOCKETS_TCP_TRACE
 
  /*

@@ -22,6 +22,10 @@ ifdef CONFIG_LWIP_IPV6
 COMPONENT_SRCDIRS += lwip/src/core/ipv6
 endif
 
+ifdef CONFIG_LWIP_APP_HTTP
+COMPONENT_SRCDIRS += lwip/src/apps/http
+endif
+
 CFLAGS += -Wno-address #lots of LWIP source files evaluate macros that check address of stack variables
 
 lwip/src/apps/sntp/sntp.o: CFLAGS += -Wno-implicit-function-declaration
