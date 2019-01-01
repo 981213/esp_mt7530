@@ -9,7 +9,7 @@
 #include <mdio.h>
 #include <uart_shell.h>
 #include <nvram.h>
-void wifi_init_sta(void);
+void wifi_init(void);
 void mt7530_init(void);
 void heapmon_init(void);
 void lwhttpd_init(void);
@@ -27,7 +27,7 @@ void app_main()
 		return;
 	}
 
-	wifi_init_sta();
+	wifi_init();
 	mdio_gpio_init();
 	mt7530_init();
 	uart_shell_init();
