@@ -5,6 +5,7 @@
 #include <esp_partition.h>
 #include <esp_system.h>
 #include <esp_log.h>
+#include "lwhttpd_dync.h"
 
 #define LOGTAG "http_spiffs"
 
@@ -193,10 +194,16 @@ void httpd_spiffs_deinit(u8_t format)
 /* be careful of the abnormal return value */
 int fs_open_custom(struct fs_file *file, const char *name)
 {
-	spiffs_file *fdp = malloc(sizeof(spiffs_file));
+	spiffs_file *fdp;
 	spiffs_stat f_stat;
 	s32_t ret;
 
+	if (!lwhttpd_dync_load(file, name)) {
+		file->pextension = NULL;
+		return 1;
+	}
+
+	fdp = malloc(sizeof(spiffs_file));
 	ret = SPIFFS_open(&fs, name, SPIFFS_O_RDONLY, 0);
 	if (ret < 0) {
 		free(fdp);
@@ -211,16 +218,29 @@ int fs_open_custom(struct fs_file *file, const char *name)
 }
 void fs_close_custom(struct fs_file *file)
 {
-	spiffs_file *fdp = (spiffs_file *)file->pextension;
-	SPIFFS_close(&fs, *fdp);
-	free(fdp);
+	spiffs_file *fdp;
+	if (file->pextension) {
+		fdp = (spiffs_file *)file->pextension;
+		SPIFFS_close(&fs, *fdp);
+		free(fdp);
+	} else {
+		free((void *)file->data);
+	}
 }
 
 int fs_read_custom(struct fs_file *file, char *buffer, int count)
 {
 	int ret;
-	spiffs_file *fdp = (spiffs_file *)file->pextension;
-	ret = SPIFFS_read(&fs, *fdp, (void *)buffer, count);
+	spiffs_file *fdp;
+	if (file->pextension) {
+		fdp = (spiffs_file *)file->pextension;
+		ret = SPIFFS_read(&fs, *fdp, (void *)buffer, count);
+	} else {
+		ret = count < (file->len - file->index) ?
+			      count :
+			      (file->len - file->index);
+		memcpy((void *)buffer, file->data + file->index, ret);
+	}
 	file->index += ret;
 	return ret;
 }
