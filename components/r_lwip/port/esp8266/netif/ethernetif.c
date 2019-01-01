@@ -466,9 +466,11 @@ int8_t ethernetif_init(struct netif* netif)
     }
 
 #if LWIP_NETIF_HOSTNAME
-
-    netif->hostname = "lwip";
-
+#define NETIF_HOST_LEN 12
+    char *hnbuf = malloc(NETIF_HOST_LEN);
+    snprintf(hnbuf, NETIF_HOST_LEN - 1, "ESP_%02X%02X%02X",
+        netif->hwaddr[3], netif->hwaddr[4], netif->hwaddr[5]);
+    netif->hostname = hnbuf;
 #endif /* LWIP_NETIF_HOSTNAME */
 
     /*
