@@ -304,7 +304,7 @@ size_t memp_malloc_get_size(size_t type);
  * (requires the LWIP_TCP option)
  */
 #define MEMP_NUM_TCP_PCB                CONFIG_LWIP_MAX_ACTIVE_TCP
-
+#define MEMP_NUM_PPP_PCB                1
 /**
  * MEMP_NUM_TCP_PCB_LISTEN: the number of listening TCP connections.
  * (requires the LWIP_TCP option)
@@ -526,8 +526,9 @@ size_t memp_malloc_get_size(size_t type);
  * this option does not affect outgoing packet sizes, which can be controlled
  * via IP_FRAG.
  */
-#define IP_REASSEMBLY                   CONFIG_LWIP_IP_REASSEMBLY
-
+#ifdef CONFIG_LWIP_IP_REASSEMBLY
+#define IP_REASSEMBLY                   1
+#endif
 /**
  * IP_FRAG==1: Fragment outgoing IP packets if their size exceeds MTU. Note
  * that this option does not affect incoming packet sizes, which can be
@@ -719,8 +720,9 @@ size_t memp_malloc_get_size(size_t type);
 /**
  * LWIP_AUTOIP==1: Enable AUTOIP module.
  */
-#define LWIP_AUTOIP                     CONFIG_LWIP_AUTOIP
-
+#ifdef CONFIG_LWIP_AUTOIP
+#define LWIP_AUTOIP                     1
+#endif
 /**
  * LWIP_DHCP_AUTOIP_COOP==1: Allow DHCP and AUTOIP to be both enabled on
  * the same interface at the same time.
@@ -1722,7 +1724,9 @@ size_t memp_malloc_get_size(size_t type);
 /**
  * LWIP_IPV6==1: Enable IPv6
  */
-#define LWIP_IPV6                       CONFIG_LWIP_IPV6
+#ifdef CONFIG_LWIP_IPV6
+#define LWIP_IPV6                       1
+#endif
 
 /**
  * LWIP_IPV6_NUM_ADDRESSES: Number of IPv6 addresses per netif.
