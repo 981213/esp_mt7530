@@ -1,11 +1,10 @@
 #include <errno.h>
 #include <lwip/apps/httpd.h>
 #include <lwip/apps/fs.h>
-#include <spiffs.h>
 #include <esp_partition.h>
 #include <esp_system.h>
 #include <esp_log.h>
-#include "lwhttpd_dync.h"
+#include "lwhttpd.h"
 
 #define LOGTAG "http_spiffs"
 
@@ -194,52 +193,52 @@ void httpd_spiffs_deinit(u8_t format)
 /* be careful of the abnormal return value */
 int fs_open_custom(struct fs_file *file, const char *name)
 {
-	spiffs_file *fdp;
+	lwhttpd_f_entry *fentry;
 	spiffs_stat f_stat;
 	s32_t ret;
 
-	if (!lwhttpd_dync_load(file, name)) {
-		file->pextension = NULL;
+	fentry = calloc(1, sizeof(lwhttpd_f_entry));
+	file->pextension = (void *)fentry;
+	file->index = 0;
+
+	if (!lwhttpd_dync_load(fentry, name)) {
+		file->len = fentry->len;		
 		return 1;
 	}
 
-	fdp = malloc(sizeof(spiffs_file));
 	ret = SPIFFS_open(&fs, name, SPIFFS_O_RDONLY, 0);
 	if (ret < 0) {
-		free(fdp);
+		free(fentry);
 		return 0;
 	}
-	*fdp = (spiffs_file)ret;
-	file->pextension = (void *)fdp;
-	SPIFFS_fstat(&fs, *fdp, &f_stat);
+	fentry->fdp = (spiffs_file)ret;
+	
+	SPIFFS_fstat(&fs, fentry->fdp, &f_stat);
 	file->len = f_stat.size;
-	file->index = 0;
 	return 1;
 }
 void fs_close_custom(struct fs_file *file)
 {
-	spiffs_file *fdp;
-	if (file->pextension) {
-		fdp = (spiffs_file *)file->pextension;
-		SPIFFS_close(&fs, *fdp);
-		free(fdp);
+	lwhttpd_f_entry *fentry = file->pextension;
+	if (fentry->data) {
+		free(fentry->data);
 	} else {
-		free((void *)file->data);
+		SPIFFS_close(&fs, fentry->fdp);
 	}
+	free(fentry);
 }
 
 int fs_read_custom(struct fs_file *file, char *buffer, int count)
 {
 	int ret;
-	spiffs_file *fdp;
-	if (file->pextension) {
-		fdp = (spiffs_file *)file->pextension;
-		ret = SPIFFS_read(&fs, *fdp, (void *)buffer, count);
-	} else {
+	lwhttpd_f_entry *fentry = file->pextension;
+	if (fentry->data) {
 		ret = count < (file->len - file->index) ?
 			      count :
 			      (file->len - file->index);
-		memcpy((void *)buffer, file->data + file->index, ret);
+		memcpy((void *)buffer, fentry->data + file->index, ret);
+	} else {
+		ret = SPIFFS_read(&fs, fentry->fdp, (void *)buffer, count);
 	}
 	file->index += ret;
 	return ret;
