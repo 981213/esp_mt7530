@@ -41,7 +41,7 @@ void mt7530_dump_mac_table(void)
 	}
 }
 
-static int mt7530_get_port_link(int port, struct switch_port_link *link)
+int mt7530_get_port_link(int port, struct switch_port_link *link)
 {
 	u32 speed, pmsr;
 

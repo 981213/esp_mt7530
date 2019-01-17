@@ -13,6 +13,8 @@
 
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
+extern int httpd_mt7530_portstat(lwhttpd_f_entry *fentry);
+
 int lw_hello_world(lwhttpd_f_entry *fentry)
 {
     char *content = malloc(6);
@@ -24,6 +26,7 @@ int lw_hello_world(lwhttpd_f_entry *fentry)
 
 static lwhttpd_dync_entry dync_entries[] = {
     {"/hello.txt", lw_hello_world},
+    {"/mt7530/portstat.json", httpd_mt7530_portstat},
 };
 
 int lwhttpd_dync_load(lwhttpd_f_entry *fentry, const char *name)

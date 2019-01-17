@@ -74,6 +74,7 @@ void mt7530_init(void);
 
 void mt7530_dump_mac_table(void);
 int mt7530_dump_port_mib(int port);
+int mt7530_get_port_link(int port, struct switch_port_link *link);
 
 void mt7530_vlan_conf_reset(void);
 void mt7530_vlan_set_enable(bool enabled);
