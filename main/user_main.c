@@ -12,7 +12,6 @@
 void wifi_init(void);
 void mt7530_init(void);
 void heapmon_init(void);
-void lwhttpd_init(void);
 
 void app_main()
 {
@@ -31,5 +30,4 @@ void app_main()
 	mdio_gpio_init();
 	mt7530_init();
 	uart_shell_init();
-	lwhttpd_init();
 }
