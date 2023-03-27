@@ -12,6 +12,7 @@
 void wifi_init(void);
 void mt7530_init(void);
 void heapmon_init(void);
+void mongoose_start(void);
 
 void app_main()
 {
@@ -30,4 +31,5 @@ void app_main()
 	mdio_gpio_init();
 	mt7530_init();
 	uart_shell_init();
+    mongoose_start();
 }
