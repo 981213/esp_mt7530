@@ -2,19 +2,11 @@
 #include <string.h>
 #include "uart_shell.h"
 #include <esp_system.h>
+#include <esp_console.h>
 
 int cmd_mdio_main(int argc, char **argv);
 int cmd_mt7530_main(int argc, char **argv);
 int cmd_nvram_main(int argc, char **argv);
-
-static int help_main(int argc, char **argv)
-{
-	int i;
-	for (i = 0; i < CMD_CNT; i++) {
-		printf("%s - %s\n", uart_cmds[i].cmd, uart_cmds[i].desc);
-	}
-	return 0;
-}
 
 static int free_main(int argc, char **argv)
 {
@@ -28,23 +20,18 @@ static int reset_main(int argc, char **argv)
 	return 0;
 }
 
-const uart_cmd_entry uart_cmds[CMD_CNT] = {
-	{ "free", "free memory size", free_main },
-	{ "help", "print this help", help_main },
-	{ "mdio", "mdio operations", cmd_mdio_main },
-	{ "mt7530", "mt7530 operations", cmd_mt7530_main },
-	{ "nvram", "nvram operations", cmd_nvram_main },
-	{ "reset", "chip reset", reset_main },
+const esp_console_cmd_t uart_cmds[CMD_CNT] = {
+	{ "free", "free memory size", NULL, free_main, NULL },
+	{ "mdio", "mdio operations", NULL, cmd_mdio_main, NULL },
+	{ "mt7530", "mt7530 operations", NULL, cmd_mt7530_main, NULL },
+	{ "nvram", "nvram operations", NULL, cmd_nvram_main, NULL },
+	{ "reset", "chip reset", NULL, reset_main, NULL },
 };
 
-void uart_cmd_exec(int argc, char **argv)
-{
-	int i;
-	for (i = 0; i < CMD_CNT; i++) {
-		if (!strcmp(uart_cmds[i].cmd, argv[0])) {
-			uart_cmds[i].func_main(argc, argv);
-			return;
-		}
-	}
-	printf("esp_cmd: %s: unknown command\n", argv[0]);
+void uart_shell_reg_cmds(void) {
+    int i;
+    esp_console_register_help_command();
+    for (i = 0; i < CMD_CNT; i++) {
+        ESP_ERROR_CHECK(esp_console_cmd_register(&uart_cmds[i]));
+    }
 }
