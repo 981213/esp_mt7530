@@ -139,6 +139,6 @@ void uart_shell_init(void)
 	setbuf(stdout, NULL);
 	uart_param_config(EX_UART_NUM, &uart_config);
 	uart_driver_install(EX_UART_NUM, BUF_SIZE * 2, BUF_SIZE * 2, 100,
-			    &uart_queue);
+			    &uart_queue, 0);
 	xTaskCreate(uart_shell_task, "uart_shell_task", 2048, NULL, 14, NULL);
 }
