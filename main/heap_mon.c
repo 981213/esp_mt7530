@@ -5,7 +5,7 @@
 
 static void heap_mon(void *pvParameters)
 {
-	const TickType_t wait_delay = 500 / portTICK_PERIOD_MS;
+	const TickType_t wait_delay = 2000 / portTICK_PERIOD_MS;
 	unsigned int pfmem, cfmem;
 	pfmem = esp_get_free_heap_size();
 	while (1) {
